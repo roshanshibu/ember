@@ -1,0 +1,180 @@
+.PlayerContainer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+      to bottom left,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.4)
+    ),
+    var(--current-song-color);
+  transition: all 0.1s ease-in;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.smallPlayer {
+  justify-self: center;
+  top: 90vh;
+  bottom: 20px;
+  left: 15px;
+  right: 15px;
+  height: fit-content;
+  flex-direction: row;
+  border-radius: 8px;
+  border: 1px solid var(--current-song-color);
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+    var(--current-song-color);
+}
+
+.mobileWidthControl {
+  max-width: var(--max-player-width-mobile);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-inline: 20px;
+  height: 100svh;
+  justify-content: space-evenly;
+}
+.smallPlayer .mobileWidthControl {
+  padding: unset;
+  flex-direction: row;
+  align-items: center;
+  height: unset;
+}
+
+.topControlsContainer {
+  display: flex;
+  padding-block: 30px 50px;
+  justify-content: space-between;
+}
+.smallPlayer .topControlsContainer {
+  display: none;
+}
+
+.controlsContainer {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
+}
+.controlsContainer > img {
+  height: 13px;
+}
+
+.albumArt {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--current-song-color);
+  border-radius: 5px;
+}
+
+.smallPlayer .albumArt {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  bottom: 6px;
+  left: 6px;
+  border-radius: 5px;
+}
+
+.songName {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.3rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 3.5rem;
+  margin-block: 10px;
+}
+
+.smallPlayer .songName {
+  font-size: 1rem;
+  margin: 0;
+  height: 1.3rem;
+  -webkit-line-clamp: 1;
+  margin-left: 15px;
+}
+
+.artistAlbumContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-block: 20px 10px;
+}
+.artistAlbumContainer > p {
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 0.8rem;
+}
+.smallPlayer .artistAlbumContainer {
+  display: none;
+}
+
+.timeline {
+  appearance: none;
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+  border-radius: 8px;
+  height: var(--player-timeline-thickness);
+}
+
+.timeline::-moz-range-track {
+  height: var(--player-timeline-thickness);
+  background: #ffffff;
+  border-radius: 8px;
+}
+
+.timeline::-moz-range-thumb {
+  width: 0px;
+  height: 0px;
+  box-shadow: -399px 0 0 400px var(--current-song-color);
+}
+
+.smallPlayer .timeline {
+  display: none;
+}
+
+.elapsedTimeContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-block: 5px 10px;
+}
+.elapsedTimeContainer > p {
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 0.8rem;
+}
+.smallPlayer .elapsedTimeContainer {
+  display: none;
+}
+
+.playbackControlsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+.playbackControlsContainer > div {
+  border-radius: 8px;
+  border: 1px solid var(--current-song-color);
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+    var(--current-song-color);
+  padding-block: 30px;
+  display: flex;
+  justify-content: center;
+}
+.smallPlayer .playbackControlsContainer {
+  display: none;
+}

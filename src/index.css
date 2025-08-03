@@ -4,6 +4,10 @@
   --amber-green-dimmed: #3aac20;
   --error-color: #ff156d;
   --error-color-dimmed: #341a24;
+  --current-song-color: #bd95ee;
+  --max-player-width-mobile: 360px;
+  --default-text-color: #fff;
+  --player-timeline-thickness: 6px;
 }
 
 @font-face {
@@ -50,4 +54,5 @@ p {
   font-family: "ESans";
   box-sizing: border-box;
   user-select: none;
+  color: var(--default-text-color);
 }
