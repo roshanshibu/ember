@@ -14,7 +14,7 @@
   right: -10px;
   width: 254px;
   aspect-ratio: 1;
-  background-image: url("amber.svg");
+  background-image: url("/amber.svg");
   background-size: cover;
   background-repeat: no-repeat;
   transform: rotate(-30deg);
