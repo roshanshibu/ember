@@ -2,10 +2,13 @@ import { useState } from "react";
 import "./Login.css";
 import { getRandomPlaylist } from "../../lib/APIs";
 
-export default function Login({ setLoggedIn }) {
-  const [serverURL, setServerURL] = useState("");
-  const [accessToken, setAccessToken] = useState("");
-
+export default function Login({
+  setLoggedIn,
+  serverURL,
+  setServerURL,
+  accessToken,
+  setAccessToken,
+}) {
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
