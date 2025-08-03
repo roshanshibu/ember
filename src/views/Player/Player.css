@@ -28,6 +28,7 @@
   border: 1px solid var(--current-song-color);
   background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
     var(--current-song-color);
+  width: 90vw;
 }
 
 .mobileWidthControl {
@@ -44,6 +45,7 @@
   flex-direction: row;
   align-items: center;
   height: unset;
+  justify-content: space-between;
 }
 
 .topControlsContainer {
@@ -70,6 +72,7 @@
   aspect-ratio: 1;
   background: var(--current-song-color);
   border-radius: 5px;
+  object-fit: cover;
 }
 
 .smallPlayer .albumArt {
@@ -91,6 +94,7 @@
   overflow: hidden;
   height: 3.5rem;
   margin-block: 10px;
+  line-break: anywhere;
 }
 
 .smallPlayer .songName {
@@ -137,6 +141,7 @@
   width: 0px;
   height: 0px;
   box-shadow: -399px 0 0 400px var(--current-song-color);
+  border: none;
 }
 
 .timeline::-webkit-slider-thumb {

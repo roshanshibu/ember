@@ -11,8 +11,13 @@ export default function Player({
   currentlyPlayingIndex,
   setCurrentlyPlayingIndex,
 }) {
+  const [albumArtSrc, setAlbumArtSrc] = useState(null);
+  const [currentPlaybackTime, setCurrentPlaybackTime] = useState("0:00");
+  const [currentPlaybackTimeValue, setCurrentPlaybackTimeValue] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isAutoplayEnabled, SetAutoPlay] = useState(false);
+
   const audioRef = useRef();
-  const [albumArtBlob, setAlbumArtBlob] = useState(null);
 
   useEffect(() => {
     const uuid = currentQueue[currentlyPlayingIndex]["UUID"];
@@ -47,12 +52,13 @@ export default function Player({
     fetch(albumArtSrc, albumArtOptions)
       .then((res) => res.blob())
       .then((blob) => {
-        objectURL = URL.createObjectURL(blob);
-        setAlbumArtBlob(objectURL);
-        console.log(objectURL);
+        const objectUrl = URL.createObjectURL(blob);
+        setAlbumArtSrc(objectUrl);
+        return () => URL.revokeObjectURL(objectUrl);
       })
       .catch(() => {
-        setAlbumArtBlob(null);
+        setAlbumArtSrc(null);
+        console.log("failed to get album art!");
       });
   }, [currentlyPlayingIndex]);
 
@@ -62,6 +68,8 @@ export default function Player({
     } else {
       setCurrentlyPlayingIndex(currentlyPlayingIndex + 1);
     }
+    SetAutoPlay(true);
+    playMusic();
   };
 
   const previousSong = () => {
@@ -70,6 +78,28 @@ export default function Player({
     } else {
       setCurrentlyPlayingIndex(currentlyPlayingIndex - 1);
     }
+  };
+
+  const pauseMusic = () => {
+    setIsPlaying(false);
+    audioRef.current.pause();
+  };
+  const playMusic = () => {
+    setIsPlaying(true);
+    audioRef.current.play();
+  };
+
+  const getMinutesAndSeconds = (time) => {
+    let minutes = Math.floor(time / 60);
+    let seconds = Math.floor(time % 60)
+      .toString()
+      .padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  };
+  const onMusicTimeUpdate = () => {
+    let currentTime = audioRef.current.currentTime;
+    setCurrentPlaybackTime(getMinutesAndSeconds(currentTime));
+    setCurrentPlaybackTimeValue(currentTime);
   };
 
   return (
@@ -88,6 +118,8 @@ export default function Player({
         controls
         crossOrigin="anonymous"
         style={{ display: "none" }}
+        onTimeUpdate={onMusicTimeUpdate}
+        autoPlay={isAutoplayEnabled}
       ></audio>
       <div className="mobileWidthControl">
         <div className="topControlsContainer">
@@ -105,10 +137,7 @@ export default function Player({
             Queue
           </div>
         </div>
-        <div
-          className="albumArt"
-          style={{ background: `src(${albumArtBlob})` }}
-        ></div>
+        <img className="albumArt" src={albumArtSrc || "Music.svg"} />
         <p className="songName">
           {currentQueue[currentlyPlayingIndex]["Name"]}
         </p>
@@ -122,11 +151,19 @@ export default function Player({
             type="range"
             min="0"
             max={currentQueue[currentlyPlayingIndex]["Duration"] || 0}
+            value={currentPlaybackTimeValue}
+            onChange={(e) => {
+              audioRef.current.currentTime = e.target.value;
+            }}
             className="timeline"
           ></input>
           <div className="elapsedTimeContainer">
-            <p>0:11</p>
-            <p>3:12</p>
+            <p>{currentPlaybackTime}</p>
+            <p>
+              {getMinutesAndSeconds(
+                currentQueue[currentlyPlayingIndex]["Duration"]
+              )}
+            </p>
           </div>
         </section>
 
@@ -134,9 +171,15 @@ export default function Player({
           <div onClick={previousSong}>
             <img src="Previous.svg" />
           </div>
-          <div>
-            <img src="Play.svg" />
-          </div>
+          {isPlaying ? (
+            <div onClick={pauseMusic}>
+              <img src="Pause.svg" />
+            </div>
+          ) : (
+            <div onClick={playMusic}>
+              <img src="Play.svg" />
+            </div>
+          )}
           <div onClick={nextSong}>
             <img src="Next.svg" />
           </div>
