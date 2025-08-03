@@ -1,21 +1,52 @@
-/* Prioritizing mobile for now */
-@media (min-width: 600px) {
-  html,
-  body {
-    max-width: 420px;
-    margin: 0 auto;
-  }
-  html {
-    background-image: linear-gradient(
-      45deg,
-      #595959 16.67%,
-      #474747 16.67%,
-      #474747 50%,
-      #595959 50%,
-      #595959 66.67%,
-      #474747 66.67%,
-      #474747 100%
-    );
-    background-size: 15px 15px;
-  }
+:root {
+  --bg-color: #1c1c1c;
+  --amber-green: #48d728;
+  --amber-green-dimmed: #3aac20;
+  --error-color: #ff156d;
+  --error-color-dimmed: #341a24;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "ESans";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/instrument-sans-v3-latin-regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "ESans";
+  font-style: normal;
+  font-weight: 500;
+  src: url("fonts/instrument-sans-v3-latin-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "ESans";
+  font-style: normal;
+  font-weight: 600;
+  src: url("fonts/instrument-sans-v3-latin-600.woff2") format("woff2");
+}
+
+@font-face {
+  font-display: swap;
+  font-family: "ESans";
+  font-style: normal;
+  font-weight: 700;
+  src: url("fonts/instrument-sans-v3-latin-700.woff2") format("woff2");
+}
+
+body {
+  margin: 0;
+  background: var(--bg-color);
+}
+p {
+  margin: 0;
+}
+* {
+  font-family: "ESans";
+  box-sizing: border-box;
+  user-select: none;
 }
