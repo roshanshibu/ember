@@ -7,6 +7,8 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [serverURL, setServerURL] = useState("");
   const [accessToken, setAccessToken] = useState("");
+  const [currentQueue, setCurrentQueue] = useState([]);
+  const [currentlyPlayingIndex, setCurrentlyPlayingIndex] = useState(0);
 
   return loggedIn ? (
     <Ember
@@ -14,6 +16,10 @@ function App() {
         setLoggedIn,
         serverURL,
         accessToken,
+        currentQueue,
+        setCurrentQueue,
+        currentlyPlayingIndex,
+        setCurrentlyPlayingIndex,
       }}
     />
   ) : (
@@ -24,6 +30,7 @@ function App() {
         setServerURL,
         accessToken,
         setAccessToken,
+        setCurrentQueue,
       }}
     />
   );

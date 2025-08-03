@@ -7,6 +7,9 @@ export default function Player({
   accessToken,
   isSmallPlayer,
   setIsSmallPlayer,
+  currentQueue,
+  currentlyPlayingIndex,
+  setCurrentlyPlayingIndex,
 }) {
   const audioRef = useRef();
 
@@ -19,7 +22,6 @@ export default function Player({
       maxBufferLength: 300,
       backBufferLength: 300,
       lowLatencyMode: false,
-      debug: true,
     };
     const hls = new Hls(config);
 
@@ -34,6 +36,23 @@ export default function Player({
       console.log("load");
     }
   }, []);
+
+  const nextSong = () => {
+    if (currentlyPlayingIndex == currentQueue.length - 1) {
+      setCurrentlyPlayingIndex(0);
+    } else {
+      setCurrentlyPlayingIndex(currentlyPlayingIndex + 1);
+    }
+  };
+
+  const previousSong = () => {
+    if (currentlyPlayingIndex == 0) {
+      setCurrentlyPlayingIndex(currentQueue.length - 1);
+    } else {
+      setCurrentlyPlayingIndex(currentlyPlayingIndex - 1);
+    }
+  };
+
   return (
     <article
       className={`PlayerContainer ${isSmallPlayer && "smallPlayer"}`}
@@ -88,13 +107,13 @@ export default function Player({
         </section>
 
         <div className="playbackControlsContainer">
-          <div>
+          <div onClick={previousSong}>
             <img src="Previous.svg" />
           </div>
           <div>
             <img src="Play.svg" />
           </div>
-          <div>
+          <div onClick={nextSong}>
             <img src="Next.svg" />
           </div>
         </div>

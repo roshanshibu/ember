@@ -8,6 +8,7 @@ export default function Login({
   setServerURL,
   accessToken,
   setAccessToken,
+  setCurrentQueue,
 }) {
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -18,12 +19,12 @@ export default function Login({
     setIsError(false);
     getRandomPlaylist(serverURL, accessToken)
       .then((response) => {
-        console.log(response);
         if (response.error) {
           setErrorMessage(response.error);
           setIsError(true);
         } else {
           console.log("login successful");
+          setCurrentQueue(response.data["playlist"]);
           setLoggedIn(true);
         }
       })
