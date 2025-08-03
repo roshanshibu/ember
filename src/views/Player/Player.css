@@ -139,6 +139,14 @@
   box-shadow: -399px 0 0 400px var(--current-song-color);
 }
 
+.timeline::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 0;
+  width: 0;
+  box-shadow: -399px 0 0 400px var(--current-song-color);
+}
+
 .smallPlayer .timeline {
   display: none;
 }
