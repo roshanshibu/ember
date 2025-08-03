@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Player.css";
 import Hls from "hls.js";
 
@@ -12,11 +12,13 @@ export default function Player({
   setCurrentlyPlayingIndex,
 }) {
   const audioRef = useRef();
+  const [albumArtBlob, setAlbumArtBlob] = useState(null);
 
   useEffect(() => {
-    const url = `${serverURL}/Music/bfacbc0a/bfacbc0a.m3u8`;
+    const uuid = currentQueue[currentlyPlayingIndex]["UUID"];
+    const url = `${serverURL}/Music/${uuid}/${uuid}.m3u8`;
     var config = {
-      xhrSetup: function (xhr, url) {
+      xhrSetup: function (xhr) {
         xhr.setRequestHeader("Authorization", accessToken);
       },
       maxBufferLength: 300,
@@ -35,7 +37,24 @@ export default function Player({
     } else {
       console.log("load");
     }
-  }, []);
+
+    const albumArtSrc = `${serverURL}/Music/${uuid}/${uuid}.png`;
+    const albumArtOptions = {
+      headers: {
+        Authorization: accessToken,
+      },
+    };
+    fetch(albumArtSrc, albumArtOptions)
+      .then((res) => res.blob())
+      .then((blob) => {
+        objectURL = URL.createObjectURL(blob);
+        setAlbumArtBlob(objectURL);
+        console.log(objectURL);
+      })
+      .catch(() => {
+        setAlbumArtBlob(null);
+      });
+  }, [currentlyPlayingIndex]);
 
   const nextSong = () => {
     if (currentlyPlayingIndex == currentQueue.length - 1) {
@@ -86,18 +105,23 @@ export default function Player({
             Queue
           </div>
         </div>
-        <div className="albumArt"></div>
-        <p className="songName">Song Name Here Song Name Here Song Name Here</p>
+        <div
+          className="albumArt"
+          style={{ background: `src(${albumArtBlob})` }}
+        ></div>
+        <p className="songName">
+          {currentQueue[currentlyPlayingIndex]["Name"]}
+        </p>
 
         <section>
           <div className="artistAlbumContainer">
-            <p>Artist Name Here</p>
-            <p>Album Name Here</p>
+            <p>{currentQueue[currentlyPlayingIndex]["Artists"] || "-"}</p>
+            <p>{currentQueue[currentlyPlayingIndex]["Album"] || "-"}</p>
           </div>
           <input
             type="range"
             min="0"
-            max="178.654671"
+            max={currentQueue[currentlyPlayingIndex]["Duration"] || 0}
             className="timeline"
           ></input>
           <div className="elapsedTimeContainer">
