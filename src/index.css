@@ -4,7 +4,7 @@
   --amber-green-dimmed: #3aac20;
   --error-color: #ff156d;
   --error-color-dimmed: #341a24;
-  --current-song-color: #bd95ee;
+  --current-song-color: #3c3c3c;
   --max-player-width-mobile: 360px;
   --default-text-color: #fff;
   --player-timeline-thickness: 9px;
@@ -42,7 +42,10 @@
   font-weight: 700;
   src: url("./assets/fonts/instrument-sans-v3-latin-700.woff2") format("woff2");
 }
-
+html,
+body {
+  overscroll-behavior: none;
+}
 body {
   margin: 0;
   background: var(--bg-color);
@@ -55,4 +58,5 @@ p {
   box-sizing: border-box;
   user-select: none;
   color: var(--default-text-color);
+  -webkit-tap-highlight-color: transparent;
 }
