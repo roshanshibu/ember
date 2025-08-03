@@ -47,11 +47,14 @@ export default function Login({ setLoggedIn }) {
         />
         <button className="connectButton" onClick={connectToServer}>
           Connect to Server{" "}
-          {isLoading ? (
-            <img src="LoadingArc.svg" className="loadingSpinner" />
-          ) : (
-            <img src="ArrowTail.svg" />
-          )}
+          <img
+            src="LoadingArcAnimated.svg"
+            style={{ width: "15px", display: isLoading ? "" : "none" }}
+          />
+          <img
+            src="ArrowTail.svg"
+            style={{ width: "15px", display: isLoading ? "none" : "" }}
+          />
         </button>
       </div>
       {isError && <p className="connectionError">{errorMessage}</p>}
