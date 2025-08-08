@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./Player.css";
 import Hls from "hls.js";
+import ColorThief from "colorthief";
 
 export default function Player({
   serverURL,
@@ -12,12 +13,14 @@ export default function Player({
   setCurrentlyPlayingIndex,
 }) {
   const [albumArtSrc, setAlbumArtSrc] = useState(null);
+  const [albumArtSrcChange, setAlbumArtSrcChange] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState("0:00");
   const [currentPlaybackTimeValue, setCurrentPlaybackTimeValue] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isAutoplayEnabled, SetAutoPlay] = useState(false);
 
   const audioRef = useRef();
+  const albumArtImgRef = useRef();
 
   useEffect(() => {
     const uuid = currentQueue[currentlyPlayingIndex]["UUID"];
@@ -62,6 +65,46 @@ export default function Player({
       });
   }, [currentlyPlayingIndex]);
 
+  useEffect(() => {
+    console.log("album art changed");
+    const colorThief = new ColorThief();
+    if (albumArtImgRef.current.complete) {
+      console.log("image load completed");
+
+      let [r, g, b] = colorThief.getColor(albumArtImgRef.current);
+      setPlayerBackgroundColor(r, g, b);
+    }
+    console.log(albumArtImgRef.current);
+  }, [albumArtSrcChange]);
+
+  const setPlayerBackgroundColor = (r, g, b) => {
+    [r, g, b] = balanceBrightness(r, g, b);
+    document.documentElement.style.setProperty(
+      "--current-song-color",
+      `rgb(${r}, ${g}, ${b})`
+    );
+  };
+
+  const balanceBrightness = (
+    r,
+    g,
+    b,
+    minBrightness = 40,
+    maxBrightness = 50
+  ) => {
+    const brightness = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    let scale = 1;
+    if (brightness < minBrightness) {
+      scale = minBrightness / brightness;
+    } else if (brightness > maxBrightness) {
+      scale = maxBrightness / brightness;
+    }
+    const newR = Math.min(255, Math.max(0, r * scale));
+    const newG = Math.min(255, Math.max(0, g * scale));
+    const newB = Math.min(255, Math.max(0, b * scale));
+
+    return [Math.round(newR), Math.round(newG), Math.round(newB)];
+  };
   const nextSong = () => {
     if (currentlyPlayingIndex == currentQueue.length - 1) {
       setCurrentlyPlayingIndex(0);
@@ -120,6 +163,7 @@ export default function Player({
         style={{ display: "none" }}
         onTimeUpdate={onMusicTimeUpdate}
         autoPlay={isAutoplayEnabled}
+        onEnded={nextSong}
       ></audio>
       <div className="mobileWidthControl">
         <div className="topControlsContainer">
@@ -137,15 +181,24 @@ export default function Player({
             Queue
           </div>
         </div>
-        <img className="albumArt" src={albumArtSrc || "Music.svg"} />
+        <div
+          className="albumArtContainer"
+          onLoad={() => setAlbumArtSrcChange(!albumArtSrcChange)}
+        >
+          <img
+            className="albumArt"
+            src={albumArtSrc || "Music.svg"}
+            ref={albumArtImgRef}
+          />
+        </div>
         <p className="songName">
           {currentQueue[currentlyPlayingIndex]["Name"]}
         </p>
 
         <section>
           <div className="artistAlbumContainer">
-            <p>{currentQueue[currentlyPlayingIndex]["Artists"] || "-"}</p>
-            <p>{currentQueue[currentlyPlayingIndex]["Album"] || "-"}</p>
+            <p>{currentQueue[currentlyPlayingIndex]["Artists"] || "⠀"}</p>
+            <p>{currentQueue[currentlyPlayingIndex]["Album"] || "⠀"}</p>
           </div>
           <input
             type="range"

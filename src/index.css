@@ -4,7 +4,7 @@
   --amber-green-dimmed: #3aac20;
   --error-color: #ff156d;
   --error-color-dimmed: #341a24;
-  --current-song-color: #3c3c3c;
+  --current-song-color: rgb(40, 40, 40);
   --max-player-width-mobile: 360px;
   --default-text-color: #fff;
   --player-timeline-thickness: 9px;
