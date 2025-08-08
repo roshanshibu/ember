@@ -21,6 +21,7 @@ export default function Player({
 
   const audioRef = useRef();
   const albumArtImgRef = useRef();
+  const albumArtContainerRef = useRef();
 
   useEffect(() => {
     const uuid = currentQueue[currentlyPlayingIndex]["UUID"];
@@ -73,6 +74,7 @@ export default function Player({
 
       let [r, g, b] = colorThief.getColor(albumArtImgRef.current);
       setPlayerBackgroundColor(r, g, b);
+      albumArtImgRef.current.style.opacity = 1;
     }
     console.log(albumArtImgRef.current);
   }, [albumArtSrcChange]);
@@ -105,21 +107,22 @@ export default function Player({
 
     return [Math.round(newR), Math.round(newG), Math.round(newB)];
   };
-  const nextSong = () => {
-    if (currentlyPlayingIndex == currentQueue.length - 1) {
-      setCurrentlyPlayingIndex(0);
-    } else {
-      setCurrentlyPlayingIndex(currentlyPlayingIndex + 1);
-    }
-    SetAutoPlay(true);
-    playMusic();
-  };
 
-  const previousSong = () => {
-    if (currentlyPlayingIndex == 0) {
-      setCurrentlyPlayingIndex(currentQueue.length - 1);
-    } else {
-      setCurrentlyPlayingIndex(currentlyPlayingIndex - 1);
+  const changeSong = (isNext) => {
+    const newIndex = currentlyPlayingIndex + (isNext ? 1 : -1);
+    if (newIndex >= currentQueue.length) {
+      newIndex = 0;
+    }
+    if (newIndex == -1) {
+      newIndex = currentQueue.length - 1;
+    }
+    setCurrentlyPlayingIndex(newIndex);
+    albumArtContainerRef.current.style.background = `url(${albumArtImgRef.current.src}),  var(--current-song-color)`;
+    albumArtImgRef.current.style.opacity = 0;
+
+    if (isNext) {
+      SetAutoPlay(true);
+      playMusic();
     }
   };
 
@@ -163,7 +166,7 @@ export default function Player({
         style={{ display: "none" }}
         onTimeUpdate={onMusicTimeUpdate}
         autoPlay={isAutoplayEnabled}
-        onEnded={nextSong}
+        onEnded={() => changeSong(true)}
       ></audio>
       <div className="mobileWidthControl">
         <div className="topControlsContainer">
@@ -184,6 +187,7 @@ export default function Player({
         <div
           className="albumArtContainer"
           onLoad={() => setAlbumArtSrcChange(!albumArtSrcChange)}
+          ref={albumArtContainerRef}
         >
           <img
             className="albumArt"
@@ -221,7 +225,7 @@ export default function Player({
         </section>
 
         <div className="playbackControlsContainer">
-          <div onClick={previousSong}>
+          <div onClick={() => changeSong(false)}>
             <img src="Previous.svg" />
           </div>
           {isPlaying ? (
@@ -233,7 +237,7 @@ export default function Player({
               <img src="Play.svg" />
             </div>
           )}
-          <div onClick={nextSong}>
+          <div onClick={() => changeSong(true)}>
             <img src="Next.svg" />
           </div>
         </div>

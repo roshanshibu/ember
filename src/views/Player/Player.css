@@ -71,6 +71,9 @@
 .albumArtContainer {
   aspect-ratio: 1;
   position: relative;
+  background-size: cover !important;
+  background-position: center !important;
+  border-radius: 5px;
 }
 .albumArt {
   position: absolute;
@@ -79,8 +82,7 @@
   background: var(--current-song-color);
   object-fit: cover;
   aspect-ratio: 1;
-  opacity: 1;
-  transition: opacity 1s;
+  transition: opacity 0.3s;
 }
 .albumArtHidden {
   opacity: 0;
