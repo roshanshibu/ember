@@ -262,15 +262,33 @@ export default function Player({
             <img src="Previous.svg" />
           </div>
           {isPlaying ? (
-            <div onClick={pauseMusic}>
+            <div
+              className="miniPlayerControlButton"
+              onClick={(e) => {
+                pauseMusic();
+                e.stopPropagation();
+              }}
+            >
               <img src="Pause.svg" />
             </div>
           ) : (
-            <div onClick={playMusic}>
+            <div
+              className="miniPlayerControlButton"
+              onClick={(e) => {
+                playMusic();
+                e.stopPropagation();
+              }}
+            >
               <img src="Play.svg" />
             </div>
           )}
-          <div onClick={nextSong}>
+          <div
+            onClick={(e) => {
+              nextSong();
+              e.stopPropagation();
+            }}
+            className="miniPlayerControlButton"
+          >
             <img src="Next.svg" />
           </div>
         </div>

@@ -47,6 +47,7 @@
   align-items: center;
   height: unset;
   justify-content: space-between;
+  max-width: unset;
 }
 
 .topControlsContainer {
@@ -134,9 +135,10 @@
   width: 40px;
   height: 40px;
   position: relative;
-  bottom: 6px;
-  left: 6px;
+  bottom: 8px;
+  left: 8px;
   border-radius: 5px;
+  overflow: unset;
 }
 
 .songName {
@@ -158,6 +160,8 @@
   height: 1.3rem;
   -webkit-line-clamp: 1;
   margin-left: 15px;
+  width: 100%;
+  text-align: center;
 }
 
 .artistAlbumContainer {
@@ -239,12 +243,23 @@
   border: 1px solid var(--current-song-color);
   background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
     var(--current-song-color);
-  transition: all 0.6s;
+  transition: background 0.6s;
   padding-block: 30px;
   display: flex;
   justify-content: center;
   cursor: pointer;
 }
 .smallPlayer .playbackControlsContainer {
+  margin: 0;
+  width: unset;
+  display: unset;
+  padding-inline: 15px;
+  display: flex;
+}
+.smallPlayer .playbackControlsContainer > :not(.miniPlayerControlButton) {
   display: none;
+}
+.smallPlayer .miniPlayerControlButton {
+  padding: 15px 10px;
+  border: unset;
 }
