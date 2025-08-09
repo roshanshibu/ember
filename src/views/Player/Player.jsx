@@ -21,6 +21,8 @@ export default function Player({
 
   const audioRef = useRef();
   const albumArtImgRef = useRef();
+  const doubleTapLeftRef = useRef();
+  const doubleTapRightRef = useRef();
 
   useEffect(() => {
     const uuid = currentQueue[currentlyPlayingIndex]["UUID"];
@@ -40,10 +42,8 @@ export default function Player({
       hls.loadSource(url);
       hls.attachMedia(audioRef.current);
       hls.on(Hls.Events.ERROR, (err) => {
-        console.log(err);
+        console.error(err);
       });
-    } else {
-      console.log("load");
     }
 
     const albumArtSrc = `${serverURL}/Music/${uuid}/${uuid}.png`;
@@ -61,20 +61,16 @@ export default function Player({
       })
       .catch(() => {
         setAlbumArtSrc(null);
-        console.log("failed to get album art!");
+        console.error("failed to get album art!");
       });
   }, [currentlyPlayingIndex]);
 
   useEffect(() => {
-    console.log("album art changed");
     const colorThief = new ColorThief();
     if (albumArtImgRef.current.complete) {
-      console.log("image load completed");
-
       let [r, g, b] = colorThief.getColor(albumArtImgRef.current);
       setPlayerBackgroundColor(r, g, b);
     }
-    console.log(albumArtImgRef.current);
   }, [albumArtSrcChange]);
 
   const setPlayerBackgroundColor = (r, g, b) => {
@@ -145,6 +141,32 @@ export default function Player({
     setCurrentPlaybackTimeValue(currentTime);
   };
 
+  const handleDoubleClick = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const widthPercent = Math.round((x / rect.width) * 10000) / 100;
+
+    if (widthPercent < 50) {
+      doubleTapLeftRef.current.classList.remove("doubleTabOverlayAnimation");
+      doubleTapLeftRef.current.offsetHeight;
+      doubleTapLeftRef.current.classList.add("doubleTabOverlayAnimation");
+      seekSong(-10);
+    } else {
+      doubleTapRightRef.current.classList.remove("doubleTabOverlayAnimation");
+      doubleTapRightRef.current.offsetHeight;
+      doubleTapRightRef.current.classList.add("doubleTabOverlayAnimation");
+      seekSong(10);
+    }
+
+    console.log(`Double clicked at: (${widthPercent})`);
+  };
+
+  const seekSong = (time) => {
+    audioRef.current.currentTime += time;
+    audioRef.current.play();
+    setIsPlaying(true);
+  };
+
   return (
     <article
       className={`PlayerContainer ${isSmallPlayer && "smallPlayer"}`}
@@ -184,12 +206,27 @@ export default function Player({
         <div
           className="albumArtContainer"
           onLoad={() => setAlbumArtSrcChange(!albumArtSrcChange)}
+          onDoubleClick={handleDoubleClick}
         >
           <img
             className="albumArt"
             src={albumArtSrc || "Music.svg"}
             ref={albumArtImgRef}
           />
+          <div
+            className="doubleTapOverlay leftDoubleTapOverlay"
+            ref={doubleTapLeftRef}
+          >
+            <img src="WavyArrow.svg" />
+            <p>- 10s</p>
+          </div>
+          <div
+            className="doubleTapOverlay rightDoubleTapOverlay"
+            ref={doubleTapRightRef}
+          >
+            <img src="WavyArrow.svg" />
+            <p>+ 10s</p>
+          </div>
         </div>
         <p className="songName">
           {currentQueue[currentlyPlayingIndex]["Name"]}

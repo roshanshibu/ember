@@ -71,6 +71,7 @@
 .albumArtContainer {
   aspect-ratio: 1;
   position: relative;
+  overflow: hidden;
 }
 .albumArt {
   position: absolute;
@@ -86,7 +87,50 @@
   opacity: 0;
 }
 
-.smallPlayer .albumArt {
+.doubleTapOverlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)),
+    var(--current-song-color);
+  border-radius: 100%;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.leftDoubleTapOverlay {
+  right: 50%;
+  justify-content: center;
+  padding-left: 40%;
+}
+.rightDoubleTapOverlay {
+  left: 50%;
+  justify-content: center;
+  padding-right: 40%;
+}
+.rightDoubleTapOverlay > img {
+  rotate: 180deg;
+}
+.doubleTabOverlayAnimation {
+  animation: doubleTapOverlayKeyframes 2s;
+}
+
+@keyframes doubleTapOverlayKeyframes {
+  from {
+    opacity: 0.7;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.smallPlayer .doubleTapOverlay {
+  display: none;
+}
+
+.smallPlayer .albumArtContainer {
   width: 40px;
   height: 40px;
   position: relative;
