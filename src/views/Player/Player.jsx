@@ -101,6 +101,7 @@ export default function Player({
 
     return [Math.round(newR), Math.round(newG), Math.round(newB)];
   };
+
   const nextSong = () => {
     if (currentlyPlayingIndex == currentQueue.length - 1) {
       setCurrentlyPlayingIndex(0);
@@ -135,6 +136,7 @@ export default function Player({
       .padStart(2, "0");
     return `${minutes}:${seconds}`;
   };
+
   const onMusicTimeUpdate = () => {
     let currentTime = audioRef.current.currentTime;
     setCurrentPlaybackTime(getMinutesAndSeconds(currentTime));
@@ -157,8 +159,6 @@ export default function Player({
       doubleTapRightRef.current.classList.add("doubleTabOverlayAnimation");
       seekSong(10);
     }
-
-    console.log(`Double clicked at: (${widthPercent})`);
   };
 
   const seekSong = (time) => {
@@ -167,13 +167,21 @@ export default function Player({
     setIsPlaying(true);
   };
 
+  const removeDoubleTapOverlayAnimations = () => {
+    doubleTapLeftRef.current.classList.remove("doubleTabOverlayAnimation");
+    doubleTapRightRef.current.classList.remove("doubleTabOverlayAnimation");
+  };
+
+  const minimizePlayer = () => {
+    removeDoubleTapOverlayAnimations();
+    setIsSmallPlayer(true);
+  };
+
   return (
     <article
       className={`PlayerContainer ${isSmallPlayer && "smallPlayer"}`}
       onClick={() => {
-        if (isSmallPlayer) {
-          setIsSmallPlayer(false);
-        }
+        if (isSmallPlayer) setIsSmallPlayer(!isSmallPlayer);
       }}
     >
       <audio
@@ -189,12 +197,7 @@ export default function Player({
       ></audio>
       <div className="mobileWidthControl">
         <div className="topControlsContainer">
-          <div
-            className="controlsContainer"
-            onClick={() => {
-              setIsSmallPlayer(true);
-            }}
-          >
+          <div className="controlsContainer" onClick={minimizePlayer}>
             <img src="Arrow.svg" />
             Back
           </div>
