@@ -17,7 +17,8 @@ export default function Player({
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState("0:00");
   const [currentPlaybackTimeValue, setCurrentPlaybackTimeValue] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isAutoplayEnabled, SetAutoPlay] = useState(false);
+  const [isAutoplayEnabled, setAutoPlay] = useState(false);
+  const [isExtraControlsVisible, setIsExtraControlsVisible] = useState(false);
 
   const audioRef = useRef();
   const albumArtImgRef = useRef();
@@ -108,7 +109,7 @@ export default function Player({
     } else {
       setCurrentlyPlayingIndex(currentlyPlayingIndex + 1);
     }
-    SetAutoPlay(true);
+    setAutoPlay(true);
     playMusic();
   };
 
@@ -143,17 +144,19 @@ export default function Player({
     setCurrentPlaybackTimeValue(currentTime);
   };
 
-  const handleDoubleClick = (event) => {
+  const handleAlbumArtDoubleClick = (event) => {
+    if (isExtraControlsVisible) return;
     const rect = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const widthPercent = Math.round((x / rect.width) * 10000) / 100;
 
-    if (widthPercent < 50) {
+    if (widthPercent < 40) {
       doubleTapLeftRef.current.classList.remove("doubleTabOverlayAnimation");
       doubleTapLeftRef.current.offsetHeight;
       doubleTapLeftRef.current.classList.add("doubleTabOverlayAnimation");
       seekSong(-10);
-    } else {
+    }
+    if (widthPercent > 60) {
       doubleTapRightRef.current.classList.remove("doubleTabOverlayAnimation");
       doubleTapRightRef.current.offsetHeight;
       doubleTapRightRef.current.classList.add("doubleTabOverlayAnimation");
@@ -175,6 +178,22 @@ export default function Player({
   const minimizePlayer = () => {
     removeDoubleTapOverlayAnimations();
     setIsSmallPlayer(true);
+  };
+
+  const handleAlbumArtImgClick = (event) => {
+    const rect = albumArtImgRef.current.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const widthPercent = Math.round((x / rect.width) * 10000) / 100;
+    if (!isExtraControlsVisible && widthPercent >= 40 && widthPercent <= 60) {
+      setIsExtraControlsVisible(true);
+    }
+    if (isExtraControlsVisible && widthPercent <= 100) {
+      setIsExtraControlsVisible(false);
+    }
+  };
+
+  const hideExtraControls = () => {
+    setIsExtraControlsVisible(false);
   };
 
   return (
@@ -209,13 +228,36 @@ export default function Player({
         <div
           className="albumArtContainer"
           onLoad={() => setAlbumArtSrcChange(!albumArtSrcChange)}
-          onDoubleClick={handleDoubleClick}
+          onDoubleClick={handleAlbumArtDoubleClick}
+          onClick={handleAlbumArtImgClick}
+          onBlur={hideExtraControls}
+          tabIndex={1}
         >
           <img
-            className="albumArt"
+            className={`albumArt ${
+              isExtraControlsVisible ? "tiltAlbumArt" : ""
+            }`}
             src={albumArtSrc || "Music.svg"}
             ref={albumArtImgRef}
           />
+          <div
+            className={`extraControlsContainer ${
+              isExtraControlsVisible ? "visibleControls" : ""
+            }`}
+          >
+            <img
+              src="RepeatAll.svg"
+              onClick={() => {
+                console.log("extra control clicked");
+              }}
+            />
+            <img
+              src="Edit.svg"
+              onClick={() => {
+                console.log("extra control clicked");
+              }}
+            />
+          </div>
           <div
             className="doubleTapOverlay leftDoubleTapOverlay"
             ref={doubleTapLeftRef}
