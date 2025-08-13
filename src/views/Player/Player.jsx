@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./Player.css";
 import Hls from "hls.js";
 import ColorThief from "colorthief";
+import { getRandomPlaylist } from "../../lib/APIs";
 
 export default function Player({
   serverURL,
@@ -9,6 +10,7 @@ export default function Player({
   isSmallPlayer,
   setIsSmallPlayer,
   currentQueue,
+  setCurrentQueue,
   currentlyPlayingIndex,
   setCurrentlyPlayingIndex,
 }) {
@@ -17,7 +19,6 @@ export default function Player({
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState("0:00");
   const [currentPlaybackTimeValue, setCurrentPlaybackTimeValue] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isAutoplayEnabled, setAutoPlay] = useState(false);
   const [isExtraControlsVisible, setIsExtraControlsVisible] = useState(false);
 
   const audioRef = useRef();
@@ -64,7 +65,7 @@ export default function Player({
         setAlbumArtSrc(null);
         console.error("failed to get album art!");
       });
-  }, [currentlyPlayingIndex]);
+  }, [currentlyPlayingIndex, currentQueue]);
 
   useEffect(() => {
     const colorThief = new ColorThief();
@@ -73,6 +74,17 @@ export default function Player({
       setPlayerBackgroundColor(r, g, b);
     }
   }, [albumArtSrcChange]);
+
+  const getNewRandomPlaylist = () => {
+    getRandomPlaylist(serverURL, accessToken).then((response) => {
+      if (response.error) {
+        setLoggedIn(false);
+      } else {
+        setIsExtraControlsVisible(false);
+        setCurrentQueue(response.data["playlist"]);
+      }
+    });
+  };
 
   const setPlayerBackgroundColor = (r, g, b) => {
     [r, g, b] = balanceBrightness(r, g, b);
@@ -109,8 +121,6 @@ export default function Player({
     } else {
       setCurrentlyPlayingIndex(currentlyPlayingIndex + 1);
     }
-    setAutoPlay(true);
-    playMusic();
   };
 
   const previousSong = () => {
@@ -211,7 +221,7 @@ export default function Player({
         crossOrigin="anonymous"
         style={{ display: "none" }}
         onTimeUpdate={onMusicTimeUpdate}
-        autoPlay={isAutoplayEnabled}
+        autoPlay={isPlaying}
         onEnded={nextSong}
       ></audio>
       <div className="mobileWidthControl">
@@ -246,9 +256,10 @@ export default function Player({
             }`}
           >
             <img
-              src="RepeatAll.svg"
+              src="Shuffle.svg"
               onClick={() => {
-                console.log("extra control clicked");
+                console.log("shuffle clicked");
+                getNewRandomPlaylist();
               }}
             />
             <img

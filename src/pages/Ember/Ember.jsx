@@ -1,6 +1,7 @@
 import "./Ember.css";
 import Player from "../../views/Player/Player";
 import { useEffect, useState } from "react";
+import { getRandomPlaylist } from "../../lib/APIs";
 
 export default function Ember({
   setLoggedIn,
@@ -20,7 +21,7 @@ export default function Ember({
           setLoggedIn(false);
         } else {
           setCurrentlyPlayingIndex(0);
-          setCurrentQueue(response["playlist"]);
+          setCurrentQueue(response.data["playlist"]);
         }
       });
     }
@@ -35,6 +36,7 @@ export default function Ember({
           isSmallPlayer,
           setIsSmallPlayer,
           currentQueue,
+          setCurrentQueue,
           currentlyPlayingIndex,
           setCurrentlyPlayingIndex,
         }}
