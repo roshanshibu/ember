@@ -20,6 +20,7 @@ export default function Player({
   const [currentPlaybackTimeValue, setCurrentPlaybackTimeValue] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isExtraControlsVisible, setIsExtraControlsVisible] = useState(false);
+  const [isQueueVisible, setIsQueueVisible] = useState(false);
 
   const audioRef = useRef();
   const albumArtImgRef = useRef();
@@ -187,6 +188,7 @@ export default function Player({
 
   const minimizePlayer = () => {
     removeDoubleTapOverlayAnimations();
+    setIsQueueVisible(false);
     setIsSmallPlayer(true);
   };
 
@@ -230,11 +232,19 @@ export default function Player({
             <img src="Arrow.svg" />
             Back
           </div>
-          <div className="controlsContainer">
-            <img src="Queue.svg" />
+          <div
+            className="controlsContainer"
+            onClick={() => {
+              setIsQueueVisible((current) => !current);
+            }}
+          >
+            <img src={isQueueVisible ? "Close.svg" : "Queue.svg"} />
             Queue
           </div>
         </div>
+        <div
+          className={`queueContainer ${isQueueVisible && "queueVisible"}`}
+        ></div>
         <div
           className="albumArtContainer"
           onLoad={() => setAlbumArtSrcChange(!albumArtSrcChange)}
