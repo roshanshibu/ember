@@ -60,15 +60,6 @@
   display: none;
 }
 
-.queueContainer {
-  z-index: 2;
-  background: red;
-  position: absolute;
-  width: calc(100% - 40px);
-  top: 70px;
-  bottom: 0;
-}
-
 .controlsContainer {
   display: flex;
   gap: 5px;
@@ -172,7 +163,7 @@
   max-width: 55px;
   gap: 20px;
   opacity: 0;
-  transition: opacity 1s;
+  transition: opacity 0.2s;
   pointer-events: none;
 }
 .extraControlsContainer > img {
@@ -214,14 +205,24 @@
 
 .queueContainer {
   z-index: 2;
-  background: var(--current-song-color);
+  background: linear-gradient(
+      to bottom left,
+      rgba(0, 0, 0, 0.07),
+      rgba(0, 0, 0, 0.3)
+    ),
+    var(--current-song-color);
   position: absolute;
   width: calc(100% - 40px);
   bottom: 0;
   border-radius: 5px 5px 0 0;
+  overflow-y: scroll;
+  overflow-x: clip;
   transition: all 0.2s;
   opacity: 0;
   top: 100svh;
+  scrollbar-color: var(--current-song-color) transparent;
+  scrollbar-width: thin;
+  border: 1px solid var(--current-song-color);
 }
 .queueVisible {
   opacity: 1;

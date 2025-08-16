@@ -3,6 +3,7 @@ import "./Player.css";
 import Hls from "hls.js";
 import ColorThief from "colorthief";
 import { getRandomPlaylist } from "../../lib/APIs";
+import QueueItem from "../../components/QueueItem/QueueItem";
 
 export default function Player({
   serverURL,
@@ -208,6 +209,12 @@ export default function Player({
     setIsExtraControlsVisible(false);
   };
 
+  const playSongInQueueWithIndex = (newPlayingIndex) => {
+    pauseMusic();
+    setCurrentlyPlayingIndex(newPlayingIndex);
+    playMusic();
+  };
+
   return (
     <article
       className={`PlayerContainer ${isSmallPlayer && "smallPlayer"}`}
@@ -242,9 +249,22 @@ export default function Player({
             Queue
           </div>
         </div>
-        <div
-          className={`queueContainer ${isQueueVisible && "queueVisible"}`}
-        ></div>
+        <div className={`queueContainer ${isQueueVisible && "queueVisible"}`}>
+          {currentQueue.map((item, i) => (
+            <QueueItem
+              key={i}
+              songName={item.Name}
+              artistName={item.Artists}
+              UUID={item.UUID}
+              isPlaying={currentlyPlayingIndex == i}
+              serverURL={serverURL}
+              accessToken={accessToken}
+              handleClick={() => {
+                playSongInQueueWithIndex(i);
+              }}
+            />
+          ))}
+        </div>
         <div
           className="albumArtContainer"
           onLoad={() => setAlbumArtSrcChange(!albumArtSrcChange)}

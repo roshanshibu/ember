@@ -1,0 +1,41 @@
+.queueItemContainer {
+  display: flex;
+  gap: 15px;
+  margin-inline: 15px;
+  margin-block: 15px 40px;
+  cursor: pointer;
+}
+.albumArtThumbnailContainer {
+  background: var(--current-song-color);
+  border-radius: 4px;
+  height: 50px;
+}
+.albumArtThumbnailContainer > img {
+  width: 50px;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 4px;
+  opacity: 0.8;
+}
+
+.queueItemTextContainer {
+  display: flex;
+  flex-direction: column;
+  padding-top: 5px;
+}
+.queueItemTextContainer > p {
+  font-size: 0.95rem;
+  line-break: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.queueItemTextContainer > p:first-child {
+  font-weight: 500;
+}
+
+.currentlyPlayingSongName {
+  text-decoration: underline;
+}
