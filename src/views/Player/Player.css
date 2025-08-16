@@ -87,7 +87,7 @@
 }
 .albumArt {
   position: absolute;
-  border-radius: 5px;
+  border-radius: 6px;
   width: 100%;
   background: var(--current-song-color);
   object-fit: cover;
