@@ -34,52 +34,6 @@
   border: none !important;
   padding: 10px;
 }
-.autoFetchContainer {
-  display: flex;
-  gap: 5px;
-  margin-block: 10px;
-  justify-content: space-between;
-}
-.autoFetchContainer > * {
-  text-align: center;
-  padding: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-  border: 1px solid #ffffff0f;
-  background: var(--current-song-color);
-}
-.autoFetchContainer > p {
-  width: 100%;
-  display: flex;
-  gap: 5px;
-  justify-content: space-between;
-  padding-inline: 8px;
-  align-items: center;
-}
-.autoFetchContainer > img {
-  width: 30px;
-  padding-inline: 10px;
-}
-.autoFetchContainer > img:last-child {
-  rotate: 180deg;
-}
-.autoFetchLoading::after {
-  background: url("/LoadingArcAnimated.svg");
-  background-size: auto;
-  width: 18px;
-  content: "";
-  display: block;
-  background-size: cover;
-  aspect-ratio: 1;
-}
-
-.autoFetchStatusText {
-  background: none;
-  border: none;
-}
-.autoFetchStatusFail {
-  color: var(--error-color);
-}
 
 .editMetadataContainer > input {
   width: 100%;
@@ -97,4 +51,21 @@
   color: white;
   padding: 15px 10px;
   margin-top: 2px;
+}
+
+/* --------------------------- */
+.autoDataFetchContainer {
+  display: flex;
+  position: absolute;
+  top: 25px;
+  right: 10px;
+  gap: 8px;
+}
+.autoDataFetchContainer > img {
+  width: 30px;
+  aspect-ratio: 1;
+  background: var(--current-song-color);
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ffffff24;
 }

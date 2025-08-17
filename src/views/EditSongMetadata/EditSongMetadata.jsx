@@ -24,7 +24,6 @@ export default function EditSongMetadata({
   const [isNewAlbumArtLoading, setIsNewAlbumArtLoading] = useState(false);
 
   useEffect(() => {
-    console.log("uuid changed");
     setIsAutoFetchCompleted(false);
     setEditSongName(currentSongName);
     setEditArtists(currentArtists);
@@ -66,10 +65,10 @@ export default function EditSongMetadata({
   };
 
   const getNewAlbumArtSrc = (newAlbumArtUrl) => {
-    if (newAlbumArtUrl == "") {
+    if (!newAlbumArtUrl || newAlbumArtUrl == "") {
       setEditAlbumArtObject(currentAlbumArtObject);
+      return;
     }
-    if (!newAlbumArtUrl) return;
 
     newAlbumArtUrl = newAlbumArtUrl.replace("http://", "https://");
 
@@ -129,43 +128,39 @@ export default function EditSongMetadata({
             className="albumArtLoadingSpinner"
           />
         )}
+        <div className="autoDataFetchContainer">
+          {isAutoFetchCompleted ? (
+            !autoFetchResults && <img src="Error.svg" />
+          ) : (
+            <img
+              src={
+                isAutoFetchLoading ? "LoadingArcAnimated.svg" : "Sparkle.svg"
+              }
+              onClick={() => {
+                getFreshMetadataFromServer();
+              }}
+            />
+          )}
+          {isAutoFetchCompleted &&
+            autoFetchResults &&
+            autoFetchResults.length > 1 && (
+              <>
+                <img
+                  src="Arrow.svg"
+                  onClick={() => getAnotherFetchResult(false)}
+                />
+                <img
+                  src="Arrow.svg"
+                  onClick={() => getAnotherFetchResult(true)}
+                  style={{ rotate: "180deg" }}
+                />
+              </>
+            )}
+        </div>
+
         <img src={editAlbumArtObject || "Music.svg"} />
       </div>
 
-      <div className="autoFetchContainer">
-        {isAutoFetchCompleted ? (
-          <p
-            className={`autoFetchStatusText ${
-              !autoFetchResults && "autoFetchStatusFail"
-            }`}
-          >
-            Auto fetch {autoFetchResults ? "complete" : "failed!"}
-          </p>
-        ) : (
-          <p
-            onClick={() => {
-              getFreshMetadataFromServer();
-            }}
-            className={isAutoFetchLoading && "autoFetchLoading"}
-          >
-            Get Metadata
-          </p>
-        )}
-        {isAutoFetchCompleted &&
-          autoFetchResults &&
-          autoFetchResults.length > 1 && (
-            <>
-              <img
-                src="Arrow.svg"
-                onClick={() => getAnotherFetchResult(false)}
-              />
-              <img
-                src="Arrow.svg"
-                onClick={() => getAnotherFetchResult(true)}
-              />
-            </>
-          )}
-      </div>
       <input
         type="text"
         placeholder="Album art URL"
