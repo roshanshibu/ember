@@ -4,6 +4,7 @@ import Hls from "hls.js";
 import ColorThief from "colorthief";
 import { getRandomPlaylist } from "../../lib/APIs";
 import QueueItem from "../../components/QueueItem/QueueItem";
+import EditSongMetadata from "../EditSongMetadata/EditSongMetadata";
 
 export default function Player({
   serverURL,
@@ -22,6 +23,7 @@ export default function Player({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isExtraControlsVisible, setIsExtraControlsVisible] = useState(false);
   const [isQueueVisible, setIsQueueVisible] = useState(false);
+  const [isEditViewVisible, setIsEditViewVisible] = useState(false);
 
   const audioRef = useRef();
   const albumArtImgRef = useRef();
@@ -243,13 +245,36 @@ export default function Player({
             className="controlsContainer"
             onClick={() => {
               setIsQueueVisible((current) => !current);
+              setIsEditViewVisible(false);
             }}
           >
             <img src={isQueueVisible ? "Close.svg" : "Queue.svg"} />
             Queue
           </div>
         </div>
-        <div className={`queueContainer ${isQueueVisible && "queueVisible"}`}>
+        <div
+          className={`utilityViewContainer ${
+            isEditViewVisible && "utilityViewContainerVisible"
+          }`}
+        >
+          <EditSongMetadata
+            hideEditMetadataContainer={() => {
+              setIsEditViewVisible(false);
+            }}
+            uuid={currentQueue[currentlyPlayingIndex]["UUID"]}
+            currentSongName={currentQueue[currentlyPlayingIndex]["Name"]}
+            currentArtists={currentQueue[currentlyPlayingIndex]["Artists"]}
+            currentAlbum={currentQueue[currentlyPlayingIndex]["Album"]}
+            currentAlbumArtObject={albumArtSrc}
+            serverURL={serverURL}
+            accessToken={accessToken}
+          />
+        </div>
+        <div
+          className={`utilityViewContainer ${
+            isQueueVisible && "utilityViewContainerVisible"
+          }`}
+        >
           {currentQueue.map((item, i) => (
             <QueueItem
               key={i}
@@ -288,14 +313,14 @@ export default function Player({
             <img
               src="Shuffle.svg"
               onClick={() => {
-                console.log("shuffle clicked");
                 getNewRandomPlaylist();
               }}
             />
             <img
               src="Edit.svg"
               onClick={() => {
-                console.log("extra control clicked");
+                setIsExtraControlsVisible(false);
+                setIsEditViewVisible((current) => !current);
               }}
             />
           </div>
