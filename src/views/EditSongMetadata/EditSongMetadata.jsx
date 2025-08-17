@@ -71,6 +71,8 @@ export default function EditSongMetadata({
     }
     if (!newAlbumArtUrl) return;
 
+    newAlbumArtUrl = newAlbumArtUrl.replace("http://", "https://");
+
     setIsNewAlbumArtLoading(true);
     fetch(newAlbumArtUrl)
       .then((res) => res.blob())
