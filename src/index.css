@@ -1,5 +1,7 @@
 :root {
   --bg-color: #1c1c1c;
+  --stroke-color: #2a2a2a;
+  --secondary-color: #1b1b1b;
   --amber-green: #48d728;
   --amber-green-dimmed: #3aac20;
   --error-color: #ff156d;

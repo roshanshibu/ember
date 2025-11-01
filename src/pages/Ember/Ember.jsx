@@ -2,6 +2,7 @@ import "./Ember.css";
 import Player from "../../views/Player/Player";
 import { useEffect, useState } from "react";
 import { getRandomPlaylist } from "../../lib/APIs";
+import Home from "../../views/Home/Home";
 
 export default function Ember({
   setLoggedIn,
@@ -41,7 +42,14 @@ export default function Ember({
           setCurrentlyPlayingIndex,
         }}
       />
-      <p>Ember Main App</p>
+      <Home
+        {...{
+          serverURL,
+          accessToken,
+          setCurrentQueue,
+          setCurrentlyPlayingIndex,
+        }}
+      />
     </main>
   );
 }
