@@ -51,7 +51,6 @@ export default function Player({
         console.error(err);
       });
     }
-    playMusic();
 
     const albumArtSrc = `${serverURL}/Music/${uuid}/${uuid}.png`;
     const albumArtOptions = {
