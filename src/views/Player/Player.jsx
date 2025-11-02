@@ -79,6 +79,35 @@ export default function Player({
     }
   }, [albumArtSrcChange]);
 
+  useEffect(() => {
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: currentQueue[currentlyPlayingIndex]["Name"] || "⠀",
+        artist: currentQueue[currentlyPlayingIndex]["Artists"] || "⠀",
+        album: currentQueue[currentlyPlayingIndex]["Album"] || "⠀",
+        artwork: [
+          {
+            src: albumArtSrc,
+            type: "image/png",
+          },
+        ],
+      });
+
+      navigator.mediaSession.setActionHandler("play", () => {
+        playMusic();
+      });
+      navigator.mediaSession.setActionHandler("pause", () => {
+        pauseMusic();
+      });
+      navigator.mediaSession.setActionHandler("previoustrack", () => {
+        previousSong();
+      });
+      navigator.mediaSession.setActionHandler("nexttrack", () => {
+        nextSong();
+      });
+    }
+  }, [currentlyPlayingIndex, albumArtSrc]);
+
   const getNewRandomPlaylist = () => {
     getRandomPlaylist(serverURL, accessToken).then((response) => {
       if (response.error) {
