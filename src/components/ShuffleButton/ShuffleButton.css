@@ -1,0 +1,31 @@
+.shuffleButton {
+  display: flex;
+  width: 80px;
+  aspect-ratio: 1;
+  background: red;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 1px solid var(--stroke-color);
+
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background-image: linear-gradient(
+      135deg,
+      var(--current-song-color) 25%,
+      transparent 25%
+    ),
+    linear-gradient(225deg, var(--current-song-color) 25%, transparent 25%),
+    linear-gradient(45deg, var(--current-song-color) 25%, transparent 25%),
+    linear-gradient(
+      315deg,
+      var(--current-song-color) 25%,
+      var(--secondary-color) 25%
+    );
+  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-size: 20px 20px;
+  background-repeat: repeat;
+}
+.shuffleButton > img {
+  width: 35px;
+}

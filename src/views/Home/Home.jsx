@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./Home.css";
 import Search, { SearchResults } from "../../components/Search/Search";
+import ShuffleButton from "../../components/ShuffleButton/ShuffleButton";
 export default function Home({
   serverURL,
   accessToken,
@@ -29,7 +30,14 @@ export default function Home({
           setCurrentlyPlayingIndex={setCurrentlyPlayingIndex}
         />
       ) : (
-        <></>
+        <section>
+          <ShuffleButton
+            serverURL={serverURL}
+            accessToken={accessToken}
+            setCurrentQueue={setCurrentQueue}
+            setCurrentlyPlayingIndex={setCurrentlyPlayingIndex}
+          />
+        </section>
       )}
     </article>
   );
