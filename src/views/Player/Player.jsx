@@ -108,6 +108,27 @@ export default function Player({
     }
   }, [currentlyPlayingIndex, albumArtSrc]);
 
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const updatePositionState = () => {
+      if (
+        "mediaSession" in navigator &&
+        "setPositionState" in navigator.mediaSession
+      ) {
+        if (audio.duration && !isNaN(audio.duration)) {
+          navigator.mediaSession.setPositionState({
+            duration: audio.duration,
+            playbackRate: audio.playbackRate,
+            position: audio.currentTime,
+          });
+        }
+      }
+    };
+    audio.addEventListener("timeupdate", updatePositionState);
+  }, []);
+
   const getNewRandomPlaylist = () => {
     getRandomPlaylist(serverURL, accessToken).then((response) => {
       if (response.error) {
