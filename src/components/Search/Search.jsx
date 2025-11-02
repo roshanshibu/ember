@@ -49,9 +49,9 @@ export default function Search({
       },
     };
     if (searchTerm.length > 3) {
+      setIsLoading(true);
       fetch(searchUrl, searchOptions)
         .then((res) => {
-          setIsLoading(true);
           res
             .json()
             .then((data) => setSearchResults(data.results))
@@ -71,7 +71,16 @@ export default function Search({
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="Search"
       ></input>
-      <img src={isLoading ? "LoadingArcAnimated.svg" : "Search.svg"} />
+      <img
+        src={
+          isLoading
+            ? "LoadingArcAnimated.svg"
+            : searchTerm.length > 3
+            ? "Close.svg"
+            : "Search.svg"
+        }
+        onClick={() => setSearchTerm("")}
+      />
     </div>
   );
 }
