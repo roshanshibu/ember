@@ -37,7 +37,8 @@ export default function Player({
       headers: {
         Authorization: accessToken,
       },
-      cache: bustAlbumArtCache ? "no-store" : "default",
+      // cache: bustAlbumArtCache ? "no-store" : "default",
+      cache: "no-store",
     };
     fetch(albumArtSrc, albumArtOptions)
       .then((res) => res.blob())
