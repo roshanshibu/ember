@@ -49,10 +49,12 @@ export default function Player({
       .catch(() => {
         setAlbumArtSrc(null);
         console.error("failed to get album art!");
+      })
+      .finally(() => {
+        if (bustAlbumArtCache) {
+          setBustAlbumArtCache(false);
+        }
       });
-    if (bustAlbumArtCache) {
-      setBustAlbumArtCache(false);
-    }
   };
 
   useEffect(() => {
