@@ -53,6 +53,23 @@
   margin-top: 2px;
 }
 
+.editMetadataButton {
+  border-radius: 5px;
+  border: 2px solid #ffffff0f;
+  background: linear-gradient(
+      to bottom left,
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0.1)
+    ),
+    var(--current-song-color);
+  color: white;
+  padding: 8px 10px;
+  margin-top: 5px;
+  text-align: center;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
 /* --------------------------- */
 .autoDataFetchContainer {
   display: flex;

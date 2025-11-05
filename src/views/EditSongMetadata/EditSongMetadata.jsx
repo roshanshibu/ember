@@ -9,6 +9,7 @@ export default function EditSongMetadata({
   currentAlbumArtObject,
   serverURL,
   accessToken,
+  updateSongMetadata,
 }) {
   const [isAutoFetchLoading, setIsAutoFetchLoading] = useState(false);
   const [isAutoFetchCompleted, setIsAutoFetchCompleted] = useState(false);
@@ -28,7 +29,7 @@ export default function EditSongMetadata({
     setEditSongName(currentSongName);
     setEditArtists(currentArtists);
     setEditAlbum(currentAlbum);
-    setEditAlbumArtURL("-");
+    setEditAlbumArtURL("");
     setEditAlbumArtObject(currentAlbumArtObject);
   }, [uuid, currentAlbumArtObject]);
 
@@ -194,6 +195,19 @@ export default function EditSongMetadata({
           setEditAlbum(e.target.value);
         }}
       />
+      <div
+        className="editMetadataButton"
+        onClick={() =>
+          updateSongMetadata(
+            editSongName,
+            editArtists,
+            editAlbum,
+            editAlbumArtURL
+          )
+        }
+      >
+        Update Data
+      </div>
     </section>
   );
 }

@@ -18,6 +18,7 @@ export default function Player({
 }) {
   const [albumArtSrc, setAlbumArtSrc] = useState(null);
   const [albumArtSrcChange, setAlbumArtSrcChange] = useState(false);
+  const [bustAlbumArtCache, setBustAlbumArtCache] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState("0:00");
   const [currentPlaybackTimeValue, setCurrentPlaybackTimeValue] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -29,6 +30,36 @@ export default function Player({
   const albumArtImgRef = useRef();
   const doubleTapLeftRef = useRef();
   const doubleTapRightRef = useRef();
+
+  const getAlbumArt = (uuid) => {
+    const albumArtSrc = `${serverURL}/Music/${uuid}/${uuid}.png`;
+    const albumArtOptions = {
+      headers: {
+        Authorization: accessToken,
+      },
+      cache: bustAlbumArtCache ? "no-store" : "default",
+    };
+    fetch(albumArtSrc, albumArtOptions)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        setAlbumArtSrc(objectUrl);
+        return () => URL.revokeObjectURL(objectUrl);
+      })
+      .catch(() => {
+        setAlbumArtSrc(null);
+        console.error("failed to get album art!");
+      });
+    if (bustAlbumArtCache) {
+      setBustAlbumArtCache(false);
+    }
+  };
+
+  useEffect(() => {
+    if (bustAlbumArtCache) {
+      getAlbumArt(currentQueue[currentlyPlayingIndex]["UUID"]);
+    }
+  }, [bustAlbumArtCache]);
 
   useEffect(() => {
     const uuid = currentQueue[currentlyPlayingIndex]["UUID"];
@@ -52,23 +83,7 @@ export default function Player({
       });
     }
 
-    const albumArtSrc = `${serverURL}/Music/${uuid}/${uuid}.png`;
-    const albumArtOptions = {
-      headers: {
-        Authorization: accessToken,
-      },
-    };
-    fetch(albumArtSrc, albumArtOptions)
-      .then((res) => res.blob())
-      .then((blob) => {
-        const objectUrl = URL.createObjectURL(blob);
-        setAlbumArtSrc(objectUrl);
-        return () => URL.revokeObjectURL(objectUrl);
-      })
-      .catch(() => {
-        setAlbumArtSrc(null);
-        console.error("failed to get album art!");
-      });
+    getAlbumArt(uuid);
   }, [currentlyPlayingIndex, currentQueue]);
 
   useEffect(() => {
@@ -267,6 +282,39 @@ export default function Player({
     playMusic();
   };
 
+  const updateSongMetadata = (
+    newSongName,
+    newArtistName,
+    newAlbumName,
+    newAlbumArtURL
+  ) => {
+    const uuid = currentQueue[currentlyPlayingIndex]["UUID"];
+    const updateAPI = `${serverURL}/replaceMetadata?UUID=${uuid}&albumArtURL=${encodeURIComponent(
+      newAlbumArtURL
+    )}&songName=${encodeURIComponent(
+      newSongName
+    )}&artistsUnsafe=${encodeURIComponent(
+      newArtistName
+    )}&albumName=${encodeURIComponent(newAlbumName)}`;
+
+    fetch(updateAPI, {
+      method: "POST",
+      headers: {
+        Authorization: accessToken,
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        let updatedQueue = currentQueue;
+        updatedQueue[currentlyPlayingIndex]["Name"] = newSongName;
+        updatedQueue[currentlyPlayingIndex]["Artists"] = newArtistName;
+        updatedQueue[currentlyPlayingIndex]["Album"] = newAlbumName;
+        setCurrentQueue(updatedQueue);
+        setBustAlbumArtCache(true);
+        setIsEditViewVisible(false);
+      })
+      .catch((err) => console.error(err));
+  };
   return (
     <article
       className={`PlayerContainer ${isSmallPlayer && "smallPlayer"}`}
@@ -318,6 +366,7 @@ export default function Player({
             currentAlbumArtObject={albumArtSrc}
             serverURL={serverURL}
             accessToken={accessToken}
+            updateSongMetadata={updateSongMetadata}
           />
         </div>
         <div
