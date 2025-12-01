@@ -39,6 +39,7 @@ export default function Player({
       },
       // cache: bustAlbumArtCache ? "no-store" : "default",
       cache: "no-store",
+      priority: "low",
     };
     fetch(albumArtSrc, albumArtOptions)
       .then((res) => res.blob())
@@ -85,8 +86,11 @@ export default function Player({
         console.error(err);
       });
     }
-
-    getAlbumArt(uuid);
+    hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
+      if (data.frag.sn === 0) {
+        getAlbumArt(uuid);
+      }
+    });
   }, [currentlyPlayingIndex, currentQueue]);
 
   useEffect(() => {
