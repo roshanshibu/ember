@@ -16,54 +16,63 @@ export default function Player({
   currentlyPlayingIndex,
   setCurrentlyPlayingIndex,
 }) {
-  const [albumArtSrc, setAlbumArtSrc] = useState(null);
   const [albumArtSrcChange, setAlbumArtSrcChange] = useState(false);
-  const [bustAlbumArtCache, setBustAlbumArtCache] = useState(false);
   const [currentPlaybackTime, setCurrentPlaybackTime] = useState("0:00");
   const [currentPlaybackTimeValue, setCurrentPlaybackTimeValue] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isExtraControlsVisible, setIsExtraControlsVisible] = useState(false);
   const [isQueueVisible, setIsQueueVisible] = useState(false);
   const [isEditViewVisible, setIsEditViewVisible] = useState(false);
+  const [albumArtBlobs, setAlbumArtBlobs] = useState({});
+  const [currentUUID, setCurrentUUID] = useState(
+    currentQueue[currentlyPlayingIndex]["UUID"]
+  );
 
   const audioRef = useRef();
   const albumArtImgRef = useRef();
   const doubleTapLeftRef = useRef();
   const doubleTapRightRef = useRef();
 
-  const getAlbumArt = (uuid) => {
-    const albumArtSrc = `${serverURL}/Music/${uuid}/${uuid}.png`;
+  useEffect(() => {
+    setCurrentUUID(currentQueue[currentlyPlayingIndex]["UUID"]);
+  }, [currentlyPlayingIndex]);
+
+  const fetchAlbumArt = async (albumArtUrl) => {
     const albumArtOptions = {
       headers: {
         Authorization: accessToken,
       },
-      // cache: bustAlbumArtCache ? "no-store" : "default",
       cache: "no-store",
       priority: "low",
     };
-    fetch(albumArtSrc, albumArtOptions)
-      .then((res) => res.blob())
-      .then((blob) => {
-        const objectUrl = URL.createObjectURL(blob);
-        setAlbumArtSrc(objectUrl);
-        return () => URL.revokeObjectURL(objectUrl);
-      })
-      .catch(() => {
-        setAlbumArtSrc(null);
-        console.error("failed to get album art!");
-      })
-      .finally(() => {
-        if (bustAlbumArtCache) {
-          setBustAlbumArtCache(false);
-        }
-      });
+    try {
+      const res = await fetch(albumArtUrl, albumArtOptions);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      return objectUrl;
+    } catch (error) {
+      console.error("failed to get album art!");
+      return null;
+    }
   };
 
   useEffect(() => {
-    if (bustAlbumArtCache) {
-      getAlbumArt(currentQueue[currentlyPlayingIndex]["UUID"]);
-    }
-  }, [bustAlbumArtCache]);
+    let albumArtMap = {};
+    currentQueue.map((song, i) => {
+      const uuid = song.UUID;
+      if (!Object.hasOwn(albumArtBlobs, uuid)) {
+        const albumArtUrl = `${serverURL}/Music/${uuid}/${uuid}.png`;
+        fetchAlbumArt(albumArtUrl).then((albumArtBlob) => {
+          console.log(song.Name, albumArtBlob);
+          albumArtMap[uuid] = albumArtBlob;
+          setAlbumArtBlobs((current) => ({
+            ...current,
+            [uuid]: albumArtBlob,
+          }));
+        });
+      }
+    });
+  }, [currentQueue]);
 
   useEffect(() => {
     const uuid = currentQueue[currentlyPlayingIndex]["UUID"];
@@ -86,11 +95,6 @@ export default function Player({
         console.error(err);
       });
     }
-    hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
-      if (data.frag.sn === 0) {
-        getAlbumArt(uuid);
-      }
-    });
   }, [currentlyPlayingIndex, currentQueue]);
 
   useEffect(() => {
@@ -109,7 +113,7 @@ export default function Player({
         album: currentQueue[currentlyPlayingIndex]["Album"] || "⠀",
         artwork: [
           {
-            src: albumArtSrc,
+            src: albumArtBlobs[currentUUID] ?? null,
             type: "image/png",
           },
         ],
@@ -128,7 +132,7 @@ export default function Player({
         nextSong();
       });
     }
-  }, [currentlyPlayingIndex, albumArtSrc]);
+  }, [currentlyPlayingIndex]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -316,8 +320,14 @@ export default function Player({
         updatedQueue[currentlyPlayingIndex]["Name"] = newSongName;
         updatedQueue[currentlyPlayingIndex]["Artists"] = newArtistName;
         updatedQueue[currentlyPlayingIndex]["Album"] = newAlbumName;
+        const albumArtUrl = `${serverURL}/Music/${uuid}/${uuid}.png`;
+        fetchAlbumArt(albumArtUrl).then((albumArtBlob) => {
+          setAlbumArtBlobs((current) => ({
+            ...current,
+            [uuid]: albumArtBlob,
+          }));
+        });
         setCurrentQueue(updatedQueue);
-        setBustAlbumArtCache(true);
         setIsEditViewVisible(false);
       })
       .catch((err) => console.error(err));
@@ -370,7 +380,7 @@ export default function Player({
             currentSongName={currentQueue[currentlyPlayingIndex]["Name"]}
             currentArtists={currentQueue[currentlyPlayingIndex]["Artists"]}
             currentAlbum={currentQueue[currentlyPlayingIndex]["Album"]}
-            currentAlbumArtObject={albumArtSrc}
+            currentAlbumArtObject={albumArtBlobs[currentUUID]}
             serverURL={serverURL}
             accessToken={accessToken}
             updateSongMetadata={updateSongMetadata}
@@ -408,7 +418,7 @@ export default function Player({
             className={`albumArt ${
               isExtraControlsVisible ? "tiltAlbumArt" : ""
             }`}
-            src={albumArtSrc || "Music.svg"}
+            src={albumArtBlobs[currentUUID] || "Music.svg"}
             ref={albumArtImgRef}
           />
           <div

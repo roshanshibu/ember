@@ -266,7 +266,11 @@
 
 .timeline::-moz-range-track {
   height: var(--player-timeline-thickness);
-  background: #ffffff;
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0.8)
+    ),
+    var(--current-song-color);
   border-radius: 8px;
 }
 
