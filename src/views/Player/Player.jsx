@@ -355,6 +355,23 @@ export default function Player({
       })
       .catch((err) => console.error(err));
   };
+
+  // hijack the back button behavior to minimize player
+  useEffect(() => {
+    window.history.pushState({ view: "fullscreen" }, "");
+    const handlePopState = (event) => {
+      setIsSmallPlayer(true);
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+
+      if (window.history.state?.view === "fullscreen") {
+        window.history.back();
+      }
+    };
+  }, [setIsSmallPlayer]);
+
   return (
     <article
       className={`PlayerContainer ${isSmallPlayer && "smallPlayer"}`}
