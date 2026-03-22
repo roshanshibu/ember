@@ -27,7 +27,7 @@ export default function Player({
   const [currentUUID, setCurrentUUID] = useState(
     currentQueue[currentlyPlayingIndex]["UUID"],
   );
-  const [backgroundColor, setBackgroundColor] = useState([50, 50, 51]);
+  const [backgroundColor, setBackgroundColor] = useState([28, 28, 28]);
 
   const audioRef = useRef();
   const albumArtImgRef = useRef();
@@ -190,7 +190,7 @@ export default function Player({
 
   useEffect(() => {
     if (isSmallPlayer) {
-      setMetaThemeColor(50, 50, 51);
+      setMetaThemeColor(28, 28, 28);
     } else {
       const [r, g, b] = backgroundColor;
       setMetaThemeColor(r, g, b);
