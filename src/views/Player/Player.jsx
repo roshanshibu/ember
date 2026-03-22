@@ -166,12 +166,20 @@ export default function Player({
     });
   };
 
+  const setMetaThemeColor = (themeColor) => {
+    const metaTags = document.querySelectorAll('meta[name="theme-color"]');
+    metaTags.forEach((tag) => {
+      tag.setAttribute("content", themeColor);
+    });
+  };
+
   const setPlayerBackgroundColor = (r, g, b) => {
     [r, g, b] = balanceBrightness(r, g, b);
     document.documentElement.style.setProperty(
       "--current-song-color",
       `rgb(${r}, ${g}, ${b})`,
     );
+    setMetaThemeColor(`rgb(${r}, ${g}, ${b})`);
   };
 
   const balanceBrightness = (
