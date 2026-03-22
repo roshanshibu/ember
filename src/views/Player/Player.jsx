@@ -358,6 +358,7 @@ export default function Player({
 
   // hijack the back button behavior to minimize player
   useEffect(() => {
+    if (isSmallPlayer) return;
     window.history.pushState({ view: "fullscreen" }, "");
     const handlePopState = (event) => {
       setIsSmallPlayer(true);
@@ -365,12 +366,11 @@ export default function Player({
     window.addEventListener("popstate", handlePopState);
     return () => {
       window.removeEventListener("popstate", handlePopState);
-
       if (window.history.state?.view === "fullscreen") {
         window.history.back();
       }
     };
-  }, [setIsSmallPlayer]);
+  }, [isSmallPlayer]);
 
   return (
     <article
