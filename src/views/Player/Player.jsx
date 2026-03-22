@@ -27,6 +27,7 @@ export default function Player({
   const [currentUUID, setCurrentUUID] = useState(
     currentQueue[currentlyPlayingIndex]["UUID"],
   );
+  const [backgroundColor, setBackgroundColor] = useState([50, 50, 51]);
 
   const audioRef = useRef();
   const albumArtImgRef = useRef();
@@ -177,12 +178,24 @@ export default function Player({
 
   const setPlayerBackgroundColor = (r, g, b) => {
     [r, g, b] = balanceBrightness(r, g, b);
+    setBackgroundColor([r, g, b]);
     document.documentElement.style.setProperty(
       "--current-song-color",
       `rgb(${r}, ${g}, ${b})`,
     );
-    setMetaThemeColor(r, g, b);
+    if (!isSmallPlayer) {
+      setMetaThemeColor(r, g, b);
+    }
   };
+
+  useEffect(() => {
+    if (isSmallPlayer) {
+      setMetaThemeColor(50, 50, 51);
+    } else {
+      const [r, g, b] = backgroundColor;
+      setMetaThemeColor(r, g, b);
+    }
+  }, [isSmallPlayer]);
 
   const balanceBrightness = (
     r,
