@@ -25,7 +25,7 @@ export default function Player({
   const [isEditViewVisible, setIsEditViewVisible] = useState(false);
   const [albumArtBlobs, setAlbumArtBlobs] = useState({});
   const [currentUUID, setCurrentUUID] = useState(
-    currentQueue[currentlyPlayingIndex]["UUID"]
+    currentQueue[currentlyPlayingIndex]["UUID"],
   );
 
   const audioRef = useRef();
@@ -170,7 +170,7 @@ export default function Player({
     [r, g, b] = balanceBrightness(r, g, b);
     document.documentElement.style.setProperty(
       "--current-song-color",
-      `rgb(${r}, ${g}, ${b})`
+      `rgb(${r}, ${g}, ${b})`,
     );
   };
 
@@ -179,7 +179,7 @@ export default function Player({
     g,
     b,
     minBrightness = 40,
-    maxBrightness = 50
+    maxBrightness = 50,
   ) => {
     const brightness = 0.2126 * r + 0.7152 * g + 0.0722 * b;
     let scale = 1;
@@ -297,15 +297,15 @@ export default function Player({
     newSongName,
     newArtistName,
     newAlbumName,
-    newAlbumArtURL
+    newAlbumArtURL,
   ) => {
     const uuid = currentQueue[currentlyPlayingIndex]["UUID"];
     const updateAPI = `${serverURL}/replaceMetadata?UUID=${uuid}&albumArtURL=${encodeURIComponent(
-      newAlbumArtURL
+      newAlbumArtURL,
     )}&songName=${encodeURIComponent(
-      newSongName
+      newSongName,
     )}&artistsUnsafe=${encodeURIComponent(
-      newArtistName
+      newArtistName,
     )}&albumName=${encodeURIComponent(newAlbumName)}`;
 
     fetch(updateAPI, {
@@ -478,7 +478,7 @@ export default function Player({
             <p>{currentPlaybackTime}</p>
             <p>
               {getMinutesAndSeconds(
-                currentQueue[currentlyPlayingIndex]["Duration"]
+                currentQueue[currentlyPlayingIndex]["Duration"],
               )}
             </p>
           </div>
