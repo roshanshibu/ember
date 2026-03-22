@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./Login.css";
 import { getRandomPlaylist } from "../../lib/APIs";
+import { TOKEN_KEY, SERVER_URL_KEY } from "../../lib/constants";
 
 export default function Login({
   setLoggedIn,
@@ -22,10 +23,14 @@ export default function Login({
         if (response.error) {
           setErrorMessage(response.error);
           setIsError(true);
+          localStorage.clear(TOKEN_KEY);
+          localStorage.clear(SERVER_URL_KEY);
         } else {
           console.log("login successful");
           setCurrentQueue(response.data["playlist"]);
           setLoggedIn(true);
+          localStorage.setItem(TOKEN_KEY, accessToken);
+          localStorage.setItem(SERVER_URL_KEY, serverURL);
         }
       })
       .finally(() => {

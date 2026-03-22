@@ -1,11 +1,15 @@
-export async function getRandomPlaylist(serverURL, accessToken) {
+export async function getRandomPlaylist(
+  serverURL,
+  accessToken,
+  playlistLength = 20,
+) {
   if (serverURL.length == 0) {
     return { error: "Server URL is empty" };
   }
   if (accessToken.length == 0) {
     return { error: "Access Token is empty" };
   }
-  const endpoint = `${serverURL}/randomPlaylist?length=50`;
+  const endpoint = `${serverURL}/randomPlaylist?length=${playlistLength}`;
   try {
     const response = await fetch(endpoint, {
       method: "GET",
