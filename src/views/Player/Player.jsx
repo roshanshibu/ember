@@ -166,7 +166,9 @@ export default function Player({
     });
   };
 
-  const setMetaThemeColor = (themeColor) => {
+  const setMetaThemeColor = (r, g, b) => {
+    const factor = 1 - 0.2;
+    let themeColor = `rgb(${Math.round(r * factor)}, ${Math.round(g * factor)}, ${Math.round(b * factor)})`;
     const metaTags = document.querySelectorAll('meta[name="theme-color"]');
     metaTags.forEach((tag) => {
       tag.setAttribute("content", themeColor);
@@ -179,7 +181,7 @@ export default function Player({
       "--current-song-color",
       `rgb(${r}, ${g}, ${b})`,
     );
-    setMetaThemeColor(`rgb(${r}, ${g}, ${b})`);
+    setMetaThemeColor(r, g, b);
   };
 
   const balanceBrightness = (
